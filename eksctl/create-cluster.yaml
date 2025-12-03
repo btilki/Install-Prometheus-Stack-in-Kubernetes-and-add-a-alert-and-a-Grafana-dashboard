@@ -1,29 +1,28 @@
-apiVersion: eksctl.io/v1alpha5
-kind: ClusterConfig
+apiVersion: eksctl.io/v1alpha5   # eksctl config version
+kind: ClusterConfig              # Defines an EKS cluster configuration
 
 metadata:
-  name: prometheus-demo
-  region: us-west-2
-  version: "1.26"
+  name: prometheus-demo          # Name of the EKS cluster
+  region: eu-central-1           # AWS region for the cluster
+  version: "1.26"                # Kubernetes version to use
 
-vpc:
-  # Use eksctl defaults or set existingVPC if you have one
+vpc:                             # Use eksctl defaults or set existingVPC if you have one
   nat:
-    gateway: Single
+    gateway: Single              # Creates a single NAT Gateway
 
 managedNodeGroups:
-  - name: ng-standard
-    instanceType: t3.medium
-    desiredCapacity: 2
-    minSize: 1
-    maxSize: 4
-    volumeSize: 20
+  - name: ng-standard            # Node group name
+    instanceType: t3.medium      # EC2 instance type for worker nodes
+    desiredCapacity: 2           
+    minSize: 1                   # Minimum node count for scaling
+    maxSize: 4                   
+    volumeSize: 20               # Size of node root volume in GB
     labels:
-      role: worker
+      role: worker               # Labels added to the nodes
     iam:
       withAddonPolicies:
-        imageBuilder: false
-        autoScaler: true
+        imageBuilder: false      # Do not allow the node group to use the ECR Image Builder functionality
+        autoScaler: true         # Grant permissions for Cluster Autoscaler
     ssh:
-      allow: true
-      publicKeyPath: ~/.ssh/id_rsa.pub
+      allow: true                # Enable SSH access to nodes
+      publicKeyPath: ~/.ssh/id_rsa.pub  # Public SSH key to use
