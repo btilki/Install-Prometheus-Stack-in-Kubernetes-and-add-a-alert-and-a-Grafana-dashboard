@@ -1,50 +1,53 @@
-# Sample values for prometheus-community/kube-prometheus-stack
-# Adjust storageClassName, passwords and sizes for your environment.
+# Chart values for kube-prometheus-stack
+# Customise storage classes, sizes, and passwords as needed.
 
 grafana:
-  enabled: true
-  adminUser: admin
-  adminPassword: "ChangeMe123!"
+  enabled: true                     # Deploy Grafana
+  adminUser: admin                 
+  adminPassword: "ChangeMe123!"     
   persistence:
-    enabled: true
-    size: 10Gi
-    storageClassName: gp2
+    enabled: true                   # Enable persistent storage
+    size: 10Gi                      # PVC size for Grafana data
+    storageClassName: gp2           # StorageClass used for the PVC
   sidecar:
     dashboards:
-      enabled: false
+      enabled: false                # Disable automatic dashboard import
 
 prometheus:
   prometheusSpec:
-    retention: "7d"
+    retention: "7d"                 # Keep metrics for 7 days
     storageSpec:
       volumeClaimTemplate:
         spec:
-          storageClassName: gp2
-          accessModes: ["ReadWriteOnce"]
+          storageClassName: gp2     # StorageClass for Prometheus PVC
+          accessModes: ["ReadWriteOnce"]  # Standard access mode
           resources:
             requests:
-              storage: 20Gi
+              storage: 20Gi         # Prometheus TSDB size
 
 alertmanager:
   alertmanagerSpec:
-    replicas: 1
+    replicas: 1                     # Number of Alertmanager pods
     storage:
       volumeClaimTemplate:
         spec:
-          storageClassName: gp2
+          storageClassName: gp2     # StorageClass for Alertmanager PVC
           accessModes: ["ReadWriteOnce"]
           resources:
             requests:
-              storage: 2Gi
+              storage: 2Gi          # Storage size for alert data
 
 kubeStateMetrics:
-  enabled: true
+  enabled: true                     # Enable kube-state-metrics exporter
 
 nodeExporter:
-  enabled: true
+  enabled: true                     # Enable node exporter on each node
 
 prometheusOperator:
-  createCustomResource: true
+  createCustomResource: true        # Create CRDs required by Prometheus Operator
+
+rbac:
+  create: true                      # Enable RBAC resources (recommended)
 
 # Keep RBAC on (default)
 rbac:
